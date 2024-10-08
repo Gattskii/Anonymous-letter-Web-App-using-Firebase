@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  </head>
+  <body>
+    <!-- Looks -->
+    <div class="container text-sm-start mt-4">
+        <div class="fs-1 fw-semibold">
+            Dear, Letters 
+        </div>
+
+        <div class="fs-4 fw-light">
+            Ah.. what do we have here..
+        </div>
+    </div>
+
+    <div class="container text-sm-start">
+        <button type="button" class="btn btn-dark d-block mt-4" onclick="window.location.href='index.html'">
+          About
+        </button>
+        <button type="button" class="btn btn-light d-block mt-2">
+          Letters
+        </button>
+        <button type="button" class="btn btn-dark d-block mt-2" onclick="window.location.href='write.html'">
+          Write
+        </button>
+    </div>
+
+
+    <!-- Display letters this is just an example, make each row contain 4 letters
+     and each row has the dear, content, from text per block-->
+     <div class="container text-sm-center mt-4" id="letters-container">
+
+     </div>
+
+
+        <!-- BOOTSTRAP JS & DATABASE -->
+        <script type="module">
+
+            // you can change this for your own database (CDN) SDK
+            import { initializeApp } from "blabla~app.js";
+     
+            const firebaseConfig = {
+                apiKey: "blabla",
+                authDomain: "blabla",
+                databaseURL: "blabla",
+                projectId: "blabla",
+                storageBucket: "blabla",
+                messagingSenderId: "blabla",
+                appId:"blabla",
+                measurementId: "blabla"
+            };
+            // you can change this for your own database ^
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+
+            import {getDatabase, ref, child, onValue, orderByChild, query, equalTo} from "https~blabla~database.js";
+        
+            const db = getDatabase();
+
+            const lettersContainer = document.getElementById('letters-container');
+
+            // Function to display a single letter
+            function displayLetter(letter, rowElement) {
+              const letterElement = document.createElement('div');
+              letterElement.classList.add('card', 'mb-3', 'mx-3', "col"); // Add Bootstrap card class
+              rowElement.appendChild(letterElement);
+
+              const cardBody = document.createElement('div');
+              cardBody.classList.add('card-body');
+              letterElement.appendChild(cardBody);
+
+              const dearElement = document.createElement('h5');
+              dearElement.classList.add('card-title');
+              dearElement.textContent = `Dear: ${letter.dear}`;
+              cardBody.appendChild(dearElement);
+
+              const contentElement = document.createElement('p');
+              contentElement.classList.add('card-text');
+              contentElement.textContent = `
+          ${letter.content}`;
+              cardBody.appendChild(contentElement);
+
+              const fromElement = document.createElement('p');
+              fromElement.classList.add('card-text', 'text-muted');
+              fromElement.textContent = `From: ${letter.from}`;
+              cardBody.appendChild(fromElement);
+
+              lettersContainer.appendChild(letterElement);
+            }
+
+           // Read a maximum of 30 letters from the database
+          const lettersRef = ref(db, 'LetterSet');
+          onValue(lettersRef, (snapshot) => {
+          const letters = snapshot.val();
+          const limitedLetters = Object.values(letters).slice(0, 30); // Get the first 30 letters
+
+          lettersContainer.innerHTML = ''; // Clear previous content
+
+          let letterCount = 0;
+          let rowElement = document.createElement('div');
+          limitedLetters.forEach((letter) => {
+              if (letterCount === 0){
+                console.log("first!");
+                rowElement.classList.add('row');
+              }
+              
+              letterCount++;
+              console.log(letterCount);
+
+              if (letterCount % 3 === 0) {
+                displayLetter(letter, rowElement);
+                rowElement = document.createElement('div');
+                rowElement.classList.add('row');
+              } else {
+                displayLetter(letter, rowElement);
+              }
+          });
+      });
+
+      // made by Gattskii, github: https://github.com/Gattskii
+        </script>
+    </body>
+</html>
